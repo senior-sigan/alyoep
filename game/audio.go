@@ -9,9 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 )
 
-//go:embed assets/music/4_bass.ogg
-var Bass_ogg []byte
-
 const sampleRate = 44100
 
 func NewAudioSystem() error {
