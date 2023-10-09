@@ -6,6 +6,10 @@ import (
 
 func RunApp() error {
 	game := NewGame()
+	err := NewAudioSystem()
+	if err != nil {
+		panic("Failed to init audio")
+	}
 
 	ebiten.SetWindowSize(800, 600)
 	ebiten.SetWindowTitle("ALYOP")
