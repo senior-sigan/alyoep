@@ -9,7 +9,10 @@ import (
 func RunApp() error {
 	audioContext := audio.NewContext(44100)
 	loader := assets.NewLoader(audioContext)
-	p := loader.LoadAudioOgg(assets.AudioBass, "music/4_bass.ogg")
+	progress := 0.0
+	assets.LoadAudioResources(loader, &progress)
+
+	p := loader.Audio[assets.AudioBass]
 	p.Play()
 
 	game := NewGame()
