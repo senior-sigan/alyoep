@@ -1,4 +1,4 @@
-package assets
+package lib
 
 // Almost all code got from https://github.com/quasilyte/ebitengine-resource/blob/master/loader.go
 // And simplified in my flavour
@@ -7,6 +7,7 @@ import (
 	"image"
 	"io"
 	"log"
+	"runtime"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -22,6 +23,7 @@ type Loader struct {
 	audioContext *audio.Context
 	Audio        map[AudioID]*audio.Player
 	Image        map[ImageID]*ebiten.Image
+	OpenAsset    func(string) io.ReadCloser
 }
 
 func NewLoader(audioContext *audio.Context) *Loader {
@@ -40,7 +42,7 @@ func (l *Loader) LoadAudio(id AudioID, path string) *audio.Player {
 }
 
 func (l *Loader) LoadOGG(id AudioID, path string) *audio.Player {
-	r := OpenAsset(path)
+	r := l.OpenAsset(path)
 	// Note: we're not closing the "r" above because the ogg stream
 	// needs it to be kept open.
 	stream, err := vorbis.DecodeWithoutResampling(r)
@@ -59,7 +61,7 @@ func (l *Loader) LoadOGG(id AudioID, path string) *audio.Player {
 }
 
 func (l *Loader) LoadWAV(id AudioID, path string) *audio.Player {
-	r := OpenAsset(path)
+	r := l.OpenAsset(path)
 	defer func() {
 		if err := r.Close(); err != nil {
 			log.Panicf("closing %q wav reader: %v", path, err)
@@ -84,7 +86,7 @@ func (l *Loader) LoadWAV(id AudioID, path string) *audio.Player {
 }
 
 func (l *Loader) LoadImage(id ImageID, path string) *ebiten.Image {
-	r := OpenAsset(path)
+	r := l.OpenAsset(path)
 	defer func() {
 		if err := r.Close(); err != nil {
 			log.Panicf("closing %q image reader: %v", path, err)
@@ -99,4 +101,33 @@ func (l *Loader) LoadImage(id ImageID, path string) *ebiten.Image {
 	l.Image[id] = image
 	log.Printf("+ loaded image %q", path)
 	return image
+}
+
+func (l *Loader) LoadAllAudio(resources map[AudioID]string, progress *float64) {
+	isSingleThread := runtime.GOMAXPROCS(-1) == 1
+	progressPerItem := 1.0 / float64(len(resources))
+	for id, path := range resources {
+		l.LoadAudio(id, path)
+		if progress != nil {
+			*progress += progressPerItem
+		}
+		if isSingleThread {
+			runtime.Gosched()
+		}
+	}
+}
+
+// TODO: make a single function for images and audios
+func (l *Loader) LoadAllImages(resources map[ImageID]string, progress *float64) {
+	isSingleThread := runtime.GOMAXPROCS(-1) == 1
+	progressPerItem := 1.0 / float64(len(resources))
+	for id, path := range resources {
+		l.LoadImage(id, path)
+		if progress != nil {
+			*progress += progressPerItem
+		}
+		if isSingleThread {
+			runtime.Gosched()
+		}
+	}
 }

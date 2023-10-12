@@ -2,22 +2,20 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/senior-sigan/alyoep/game/assets"
+	"github.com/senior-sigan/alyoep/lib"
 )
 
 func RunApp() error {
-	audioContext := audio.NewContext(44100)
-	loader := assets.NewLoader(audioContext)
+	ctx := lib.NewContext()
+	ctx.Loader.OpenAsset = assets.OpenAsset
+
 	progress := 0.0
-	assets.LoadAudioResources(loader, &progress)
+	assets.LoadAudioResources(ctx.Loader, &progress)
 	progress = 0.0
-	assets.LoadImageResources(loader, &progress)
+	assets.LoadImageResources(ctx.Loader, &progress)
 
-	p := loader.Audio[assets.AudioBass]
-	p.Play()
-
-	game := NewGame(loader)
+	game := NewGame(ctx)
 
 	ebiten.SetWindowSize(1280, 720)
 	ebiten.SetWindowTitle("ALYOP")

@@ -1,11 +1,11 @@
 package assets
 
 import (
-	"runtime"
+	"github.com/senior-sigan/alyoep/lib"
 )
 
 const (
-	AudioNone AudioID = iota
+	AudioNone lib.AudioID = iota
 
 	AudioLoTrash
 	AudioHiTrash
@@ -32,8 +32,8 @@ const (
 	AudioHitPlayer_4
 )
 
-func LoadAudioResources(loader *Loader, progress *float64) {
-	audioResources := map[AudioID]string{
+func LoadAudioResources(loader *lib.Loader, progress *float64) {
+	audioResources := map[lib.AudioID]string{
 		AudioLoTrash:     "music/1_lo-trash.ogg",
 		AudioHiTrash:     "music/2_hi-trash.ogg",
 		AudioDream:       "music/3_dream.ogg",
@@ -55,15 +55,5 @@ func LoadAudioResources(loader *Loader, progress *float64) {
 		AudioHitPlayer_4: "sounds/hits/hit_4.wav",
 	}
 
-	isSingleThread := runtime.GOMAXPROCS(-1) == 1
-	progressPerItem := 1.0 / float64(len(audioResources))
-	for id, path := range audioResources {
-		loader.LoadAudio(id, path)
-		if progress != nil {
-			*progress += progressPerItem
-		}
-		if isSingleThread {
-			runtime.Gosched()
-		}
-	}
+	loader.LoadAllAudio(audioResources, progress)
 }

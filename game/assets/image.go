@@ -1,9 +1,11 @@
 package assets
 
-import "runtime"
+import (
+	"github.com/senior-sigan/alyoep/lib"
+)
 
 const (
-	ImageNone ImageID = iota
+	ImageNone lib.ImageID = iota
 
 	ImageLogo
 
@@ -11,22 +13,12 @@ const (
 	ImageGameOver
 )
 
-func LoadImageResources(loader *Loader, progress *float64) {
-	resources := map[ImageID]string{
+func LoadImageResources(loader *lib.Loader, progress *float64) {
+	resources := map[lib.ImageID]string{
 		ImageLogo:     "textures/logo.png",
 		ImageTitle:    "textures/title.png",
 		ImageGameOver: "textures/game_over.png",
 	}
 
-	isSingleThread := runtime.GOMAXPROCS(-1) == 1
-	progressPerItem := 1.0 / float64(len(resources))
-	for id, path := range resources {
-		loader.LoadImage(id, path)
-		if progress != nil {
-			*progress += progressPerItem
-		}
-		if isSingleThread {
-			runtime.Gosched()
-		}
-	}
+	loader.LoadAllImages(resources, progress)
 }
