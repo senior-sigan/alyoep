@@ -11,6 +11,10 @@ web: configure_wasm
 desktop:
 	go build -o build/game cmd/desktop/main.go
 
+.PHONE: run
+run: desktop
+	./build/game
+
 .PHONY: server
 server:
 	go build -o build/server cmd/server/main.go

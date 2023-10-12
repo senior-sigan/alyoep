@@ -11,13 +11,15 @@ func RunApp() error {
 	loader := assets.NewLoader(audioContext)
 	progress := 0.0
 	assets.LoadAudioResources(loader, &progress)
+	progress = 0.0
+	assets.LoadImageResources(loader, &progress)
 
 	p := loader.Audio[assets.AudioBass]
 	p.Play()
 
-	game := NewGame()
+	game := NewGame(loader)
 
-	ebiten.SetWindowSize(800, 600)
+	ebiten.SetWindowSize(1280, 720)
 	ebiten.SetWindowTitle("ALYOP")
 	return ebiten.RunGame(game)
 }
