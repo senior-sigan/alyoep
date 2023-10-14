@@ -25,6 +25,7 @@ func NewGame(ctx *lib.Context) *Game {
 }
 
 func (g Game) Update() error {
+	g.bgMusicSystem.Update()
 	return nil
 }
 

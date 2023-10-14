@@ -30,6 +30,13 @@ const (
 	AudioHitPlayer_2
 	AudioHitPlayer_3
 	AudioHitPlayer_4
+
+	AudioSh_1
+	AudioSh_2
+	AudioSh_3
+	AudioSh_4
+	AudioSh_5
+	AudioSh_6
 )
 
 func LoadAudioResources(loader *lib.Loader, progress *float64) {
@@ -53,6 +60,12 @@ func LoadAudioResources(loader *lib.Loader, progress *float64) {
 		AudioHitPlayer_2: "sounds/hits/hit_2.wav",
 		AudioHitPlayer_3: "sounds/hits/hit_3.wav",
 		AudioHitPlayer_4: "sounds/hits/hit_4.wav",
+		AudioSh_1:        "sounds/1_sh.wav",
+		AudioSh_2:        "sounds/2_sh.wav",
+		AudioSh_3:        "sounds/3_sh.wav",
+		AudioSh_4:        "sounds/4_sh.wav",
+		AudioSh_5:        "sounds/5_sh.wav",
+		AudioSh_6:        "sounds/6_sh.wav",
 	}
 
 	loader.LoadAllAudio(audioResources, progress)
